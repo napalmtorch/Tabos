@@ -1,0 +1,8 @@
+*.o
+*.pdb
+*.deps.json
+*.runtimeconfig.json
+
+.vscode/
+obj/
+bin/
