@@ -1,1 +1,1 @@
-start Tabos.Bin/Tabos.Builder.exe build_kernel_win.osmake
+start Tabos.Bin/Tabos.Builder.exe Tabos.Kernel/Build/build_win.osmake
