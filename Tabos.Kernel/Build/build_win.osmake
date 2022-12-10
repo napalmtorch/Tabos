@@ -1,4 +1,4 @@
-SET_ASSEMBLER C:/Users/Will/AppData/Local/bin/NASM/nasm.exe
+SET_ASSEMBLER C:/Users/USER_NAME/AppData/Local/bin/NASM/nasm.exe
 SET_COMPILER  C:/GCC/bin/i686-elf-gcc.exe
 SET_LINKER    C:/GCC/bin/i686-elf-ld.exe
 SET_OBJDUMP   C:/GCC/bin/i686-elf-objdump.exe

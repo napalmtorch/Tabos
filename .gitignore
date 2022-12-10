@@ -2,6 +2,8 @@
 *.pdb
 *.deps.json
 *.runtimeconfig.json
+*.osmake
+*.iso
 
 .vscode/
 obj/
