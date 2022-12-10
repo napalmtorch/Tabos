@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <OutDir>../Tabos.Bin</OutDir>
     <OutputType>Exe</OutputType>
@@ -7,5 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+  <ItemGroup>
+    <Reference Include="Tabos.Builder.Library">
+      <HintPath>../Tabos.Bin/Tabos.Builder.Library.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DiscUtils.Iso9660" Version="0.16.4"/>
+  </ItemGroup>
 </Project>
