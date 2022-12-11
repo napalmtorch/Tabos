@@ -48,8 +48,24 @@ void TOS_KernelBoot(TOS_Multiboot* mbp)
 void TOS_KernelRun()
 {
     TOS_Log("%s Entered kernel main\n", DEBUG_OK);
+
+    uint32_t last = 0, fps = 0, frames = 0;
     while (true)
     {
+        TOS_PITTimer* pit = (TOS_PITTimer*)TOS_FetchDriverFromName("PIT");
+        if (pit != NULL)
+        {
+            frames++;
+            uint32_t secs = pit->millis_total / 1000;
+            if (last != secs)
+            {
+                last = secs;
+                fps = frames;
+                frames = 0;
+                TOS_Log("FPS: %u\n", fps);
+            }
+        }
+
         TOS_SwitchThread(true);   
     }
 }
