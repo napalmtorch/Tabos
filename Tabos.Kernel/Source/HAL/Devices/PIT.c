@@ -18,9 +18,12 @@ bool TOS_StartPIT(TOS_PITTimer* pit, uint32_t freq)
     TOS_DisableIRQs();
 
     uint32_t f = PIT_DIVISOR / pit->freq;
+    uint8_t  h = (uint8_t)((f & 0xFF00) >> 8);
+    uint8_t  l = (uint8_t)((f & 0x00FF));
+
     TOS_PortOutb(PIT_CMD, 0x36);
-    TOS_PortOutb(PIT_DATA, f & 0xFF);
-    TOS_PortOutb(PIT_DATA, f >> 8);
+    TOS_PortOutb(PIT_DATA, l);
+    TOS_PortOutb(PIT_DATA, h);
 
     TOS_RegisterIRQ(IRQ0, TOS_HandleInterruptPIT);
     if (ints) { TOS_EnableIRQs(); }
@@ -34,7 +37,9 @@ void TOS_StopPIT(TOS_PITTimer* pit)
 
 void TOS_HandleInterruptPIT(TOS_IRQContext* context)
 {
-    TOS_PITTimer* pit = (TOS_PITTimer*)TOS_FetchDriverFromName("PIT");
+    TOS_AcknowledgeIRQ(context);
+    static TOS_PITTimer* pit;
+    if (pit == NULL) { pit = (TOS_PITTimer*)TOS_FetchDriverFromName("PIT"); }
     if (pit == NULL) { return; }
 
     pit->ticks++;

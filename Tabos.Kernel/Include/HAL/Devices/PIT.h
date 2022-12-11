@@ -6,7 +6,7 @@
 typedef struct
 {
     TOS_Driver driver;
-    uint64_t   ticks;
+    uint32_t   ticks;
     uint32_t   tps, timer, freq;
     uint32_t   millis, millis_total;
 } TOS_PITTimer;
