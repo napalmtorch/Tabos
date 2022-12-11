@@ -19,6 +19,7 @@ void TOS_InitDriverManager()
     _drivers = TOS_NewPtrList();
 
     TOS_InstallDriver((TOS_Driver*)TOS_GetDebugSerial());
+    TOS_InstallAndStartDriver(TOS_NewDriver("PIT", 0xFFFFFF40, sizeof(TOS_PITTimer), (TOS_DriverStartEvent)TOS_StartPIT, (TOS_DriverStopEvent)TOS_StopPIT), (void*)4000);
 
     TOS_Log("%s Initialized driver manager - %u drivers installed\n", DEBUG_OK, _drivers.count);
 }
