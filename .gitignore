@@ -2,10 +2,8 @@
 *.pdb
 *.deps.json
 *.runtimeconfig.json
-*.exe
-*.dll
-
-!Tabos.Bin/Limine/limine_deploy.exe
+*.osmake
+*.iso
 
 .vscode/
 obj/
