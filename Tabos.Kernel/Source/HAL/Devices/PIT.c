@@ -1,12 +1,15 @@
 #include <HAL/Devices/PIT.h>
 #include <Core/Common.h>
 
-#define PIT_DIVISOR 1193180
+#define PIT_DIVISOR 1193182
 #define PIT_CMD     0x43
 #define PIT_DATA    0x40
 
+static TOS_PITTimer* _pit;
+
 bool TOS_StartPIT(TOS_PITTimer* pit, uint32_t freq)
 {
+    _pit              = pit;
     pit->ticks        = 0;
     pit->tps          = 0;
     pit->timer        = 0;
@@ -38,19 +41,17 @@ void TOS_StopPIT(TOS_PITTimer* pit)
 void TOS_HandleInterruptPIT(TOS_IRQContext* context)
 {
     TOS_AcknowledgeIRQ(context);
-    static TOS_PITTimer* pit;
-    if (pit == NULL) { pit = (TOS_PITTimer*)TOS_FetchDriverFromName("PIT"); }
-    if (pit == NULL) { return; }
+    if (_pit == NULL) { return; }
 
-    pit->ticks++;
-    pit->timer++;
+    _pit->ticks++;
+    _pit->timer++;
 
-    if (pit->timer >= (pit->freq / 1000))
+    if (_pit->timer >= (_pit->freq / 1000))
     {
-        pit->timer = 0;
-        pit->millis++;
-        pit->millis_total++;
+        _pit->timer = 0;
+        _pit->millis++;
+        _pit->millis_total++;
     }
 
-    if (pit->millis > 1000) { pit->millis = 0; }
+    if (_pit->millis > 1000) { _pit->millis = 0; }
 }

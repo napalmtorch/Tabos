@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutDir>../Tabos.Bin</OutDir>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Tabos.Builder.Library">
+      <HintPath>../Tabos.Bin/Tabos.Builder.Library.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>

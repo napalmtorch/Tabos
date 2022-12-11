@@ -13,6 +13,7 @@ public static class Global
     public static string Limine     = "";
     public static string Emulator   = "";
     public static string RAMFSMgr   = "";
+    public static string Pipe       = "";
 
     public static bool IsGrub       = false;
     public static bool IsLimine     = false;
