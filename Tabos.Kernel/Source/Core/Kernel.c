@@ -52,11 +52,11 @@ void TOS_KernelRun()
     uint32_t last = 0, fps = 0, frames = 0;
     while (true)
     {
-        TOS_PITTimer* pit = (TOS_PITTimer*)TOS_FetchDriverFromName("PIT");
-        if (pit != NULL)
+        TOS_RealTimeClock* rtc = (TOS_RealTimeClock*)TOS_FetchDriverFromName("RTC");
+        if (rtc != NULL)
         {
             frames++;
-            uint32_t secs = pit->millis_total / 1000;
+            uint32_t secs = (uint32_t)rtc->seconds;
             if (last != secs)
             {
                 last = secs;

@@ -4,6 +4,8 @@
 *.runtimeconfig.json
 *.osmake
 *.iso
+*.scoreboard
+*.log
 
 .vscode/
 obj/

@@ -39,3 +39,13 @@ static inline void TOS_PortOutl(uint16_t port, uint32_t value) { asm volatile("o
 
 /// @brief Write string to I/O port @param port I/O port number @param data Pointer to input buffer @param sz Size in bytes
 static inline void TOS_PortOutsw(uint16_t port, const uint8_t* data, size_t sz) { asm volatile("rep outsw" : "+S" (data), "+c" (sz) : "d" (port)); }
+
+static inline void attr_optimize("O0") TOS_PortWait(int iters)
+{
+    while (iters > 0) 
+    { 
+        uint8_t dummy_data_to_slow_the_os_lol[32];
+        TOS_MemSet(dummy_data_to_slow_the_os_lol, 0xFF, sizeof(dummy_data_to_slow_the_os_lol));
+        iters--; 
+    }
+}

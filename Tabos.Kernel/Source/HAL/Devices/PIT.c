@@ -40,18 +40,20 @@ void TOS_StopPIT(TOS_PITTimer* pit)
 
 void TOS_HandleInterruptPIT(TOS_IRQContext* context)
 {
-    TOS_AcknowledgeIRQ(context);
-    if (_pit == NULL) { return; }
-
-    _pit->ticks++;
-    _pit->timer++;
-
-    if (_pit->timer >= (_pit->freq / 1000))
+    if (_pit != NULL)
     {
-        _pit->timer = 0;
-        _pit->millis++;
-        _pit->millis_total++;
-    }
+        _pit->ticks++;
+        _pit->timer++;
 
-    if (_pit->millis > 1000) { _pit->millis = 0; }
+        if (_pit->timer >= (_pit->freq / 1000))
+        {
+            _pit->timer = 0;
+            _pit->millis++;
+            _pit->millis_total++;
+        }
+
+        if (_pit->millis > 1000) { _pit->millis = 0; }
+    }
+    
+    TOS_AcknowledgeIRQ(context);
 }
