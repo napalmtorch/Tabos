@@ -48,8 +48,24 @@ void TOS_KernelBoot(TOS_Multiboot* mbp)
 void TOS_KernelRun()
 {
     TOS_Log("%s Entered kernel main\n", DEBUG_OK);
+
+    uint32_t last = 0, fps = 0, frames = 0;
     while (true)
     {
+        TOS_RealTimeClock* rtc = (TOS_RealTimeClock*)TOS_FetchDriverFromName("RTC");
+        if (rtc != NULL)
+        {
+            frames++;
+            uint32_t secs = (uint32_t)rtc->seconds;
+            if (last != secs)
+            {
+                last = secs;
+                fps = frames;
+                frames = 0;
+                TOS_Log("FPS: %u\n", fps);
+            }
+        }
+
         TOS_SwitchThread(true);   
     }
 }

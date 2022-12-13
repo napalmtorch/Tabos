@@ -23,6 +23,7 @@ public class CommandDeclarations
     public static Command SET_LIMINE    { get; private set; } = new Command("SET_LIMINE",    CommandHandlers.SET_LIMINE);
     public static Command SET_EMULATOR  { get; private set; } = new Command("SET_EMULATOR",  CommandHandlers.SET_EMULATOR);
     public static Command SET_RAMFSMGR  { get; private set; } = new Command("SET_RAMFSMGR",  CommandHandlers.SET_RAMFSMGR);
+    public static Command SET_PIPE      { get; private set; } = new Command("SET_PIPE",  CommandHandlers.SET_PIPE);
 
     public static Command SET_DIR       { get; private set; } = new Command("SET_DIR", CommandHandlers.SET_DIR);
 
@@ -44,6 +45,8 @@ public class CommandDeclarations
     public static Command MK_RAMDSIK { get; private set; } = new Command("MK_RAMDISK", CommandHandlers.MK_RAMDISK);
 
     public static Command LIMINE { get; private set; } = new Command("LIMINE", CommandHandlers.LIMINE);
+
+    public static Command PIPE { get; private set; } = new Command("PIPE", CommandHandlers.PIPE);
 
     public static Command RUN { get; private set; } = new Command("RUN", CommandHandlers.RUN);
 }
@@ -71,6 +74,7 @@ public static class CommandHandlers
                 case "limine":    { Global.Limine     = file; break; }
                 case "emulator":  { Global.Emulator   = file; break; }
                 case "ramfsmgr":  { Global.RAMFSMgr   = file; break; }
+                case "pipe":      { Global.Pipe       = file; break; }
             }
 
             Debug.Log("Set executable - Type:%s Value:%s\n", type.ToString().PadRight(10, ' '), file);
@@ -120,7 +124,7 @@ public static class CommandHandlers
 
     public static void INFO(string input, List<string> args)
     {
-        Debug.Log("PicoDotNet Builder Utility - version 2.0\n");
+        Debug.Log("Tabos Builder Utility - version 2.0\n");
     }
 
     public static void SET_ASSEMBLER(string input, List<string> args) { SetExecutable(input, args, "assembler"); }
@@ -155,6 +159,8 @@ public static class CommandHandlers
     public static void SET_EMULATOR(string input, List<string> args) { SetExecutable(input, args, "emulator"); }
 
     public static void SET_RAMFSMGR(string input, List<string> args) { SetExecutable(input, args, "ramfsmgr"); }
+
+    public static void SET_PIPE(string input, List<string> args) { SetExecutable(input, args, "pipe"); }
 
     public static void SET_DIR(string input, List<string> args)
     {
@@ -320,13 +326,17 @@ public static class CommandHandlers
 
     public static void RUN(string input, List<string> args)
     {
-        string iso_file  = StringUtil.FormatPath(Global.Path + args[1], false);
-        string proc_args = "-cdrom " + iso_file + " " + CommandParser.ReformInput(args.ToArray(), 2);
+        string proc_args = input.Substring(4);
 
         Process proc = StartProcess(Global.Emulator, proc_args);
         proc.WaitForExit();
 
         if (proc.ExitCode != 0) { Debug.Error("Failed to run emulator"); return; }
-        Debug.Log("Successfully ran emulator\n");
+        Debug.Log("Finished running emulator\n");
+    }
+
+    public static void PIPE(string input, List<string> args)
+    {
+        Process proc = Process.Start(Global.Pipe);
     }
 }

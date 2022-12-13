@@ -4,7 +4,11 @@
 *.runtimeconfig.json
 *.osmake
 *.iso
+*.scoreboard
+*.log
 
 .vscode/
 obj/
 bin/
+
+Tabos.Kernel/Build/build_win.osmake

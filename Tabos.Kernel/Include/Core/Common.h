@@ -21,7 +21,10 @@
 #include <HAL/DriverManager.h>
 #include <HAL/System/Ports.h>
 #include <HAL/System/Registers.h>
+#include <HAL/System/CPU.h>
 #include <HAL/Devices/Serial.h>
+#include <HAL/Devices/PIT.h>
+#include <HAL/Devices/RTC.h>
 #include <HAL/Interrupts/GDT.h>
 #include <HAL/Interrupts/IDT.h>
 #include <HAL/Interrupts/PIC.h>

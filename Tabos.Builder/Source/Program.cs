@@ -10,7 +10,7 @@ public static class Program
 {    
     private static void Main(string[] args)
     {
-        Debug.Log("PicoDotNet Builder Utility\n");
+        Debug.Log("Tabos Builder Utility\n");
         RegisterCommands();
         
         if (args.Length == 0) { Debug.Error("No input file specified."); }
@@ -18,7 +18,7 @@ public static class Program
         {
             if (!File.Exists(args[0])) { Debug.Error("Unable to locate command file at '%s'", args[0]); }
             string[] lines = File.ReadAllLines(args[0]);
-            foreach (string line in lines) { CommandParser.Execute(line); }
+            foreach (string line in lines) { if (line.StartsWith(";")) { continue; } CommandParser.Execute(line); }
         }
         Console.Read();
     }
@@ -34,6 +34,7 @@ public static class Program
         CommandParser.Register(CommandDeclarations.SET_LIMINE);
         CommandParser.Register(CommandDeclarations.SET_EMULATOR);
         CommandParser.Register(CommandDeclarations.SET_RAMFSMGR);
+        CommandParser.Register(CommandDeclarations.SET_PIPE);
         CommandParser.Register(CommandDeclarations.SET_DIR);
         CommandParser.Register(CommandDeclarations.MK_DIR);
         CommandParser.Register(CommandDeclarations.RM_DIR);
@@ -48,5 +49,6 @@ public static class Program
         CommandParser.Register(CommandDeclarations.MK_RAMDSIK);
         CommandParser.Register(CommandDeclarations.LIMINE);
         CommandParser.Register(CommandDeclarations.RUN);
+        CommandParser.Register(CommandDeclarations.PIPE);
     }
 }

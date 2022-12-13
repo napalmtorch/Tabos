@@ -49,7 +49,7 @@ TOS_IDTFlags IDT_EXCEPTION_ATTRS = (TOS_IDTFlags) { .type = (uint8_t)IDT_TRAP32,
 TOS_IDTFlags IDT_IRQ_ATTRS       = (TOS_IDTFlags) { .type = (uint8_t)IDT_INT32,  .unused = 0, .dpl = 3, .present = 1 };
 
 static TOS_IDTRegister _reg                  attr_align(0x100);
-static TOS_IDTEntry    _entries[IDT_COUNT]   attr_align(0x1000);
+static TOS_IDTEntry    _entries[IDT_COUNT]   attr_align(0x100);
 static TOS_IRQProtocol _protocols[IDT_COUNT] attr_align(0x100);
 
 extern void _idt_flush(uintptr_t value);
@@ -122,14 +122,14 @@ void TOS_InitIDT()
     _reg.base = (uintptr_t)&_entries;
     _reg.limit = (sizeof(TOS_IDTEntry) * IDT_COUNT) - 1;
 
-    asm volatile("cli");
+    TOS_DisableIRQs();
     TOS_InitExceptions();
     TOS_RemapPIC();
     TOS_InitIRQs();
 
     _idt_flush((uintptr_t)&_reg);
     TOS_RegisterIRQ(IRQ7, TOS_DefaultIRQProtocol);
-    asm volatile("sti");
+    TOS_EnableIRQs();
 
     TOS_Log("%s Initialized interrupt descriptor table and handlers\n", DEBUG_OK);
 }
@@ -143,9 +143,12 @@ void TOS_ExceptionHandler(TOS_IRQContext* context)
 
 void TOS_IRQHandler(TOS_IRQContext* context)
 {
-    if (_protocols[context->irq] != NULL) { _protocols[context->irq](context); return; }
-    if (context->irq != IRQ0) { TOS_Log("%s Unhandled interrupt %d\n", DEBUG_WARN, context->irq - 32); }
-    TOS_AcknowledgeIRQ(context);
+    if (_protocols[context->irq] != NULL) { _protocols[context->irq](context); }
+    else
+    {
+        if (context->irq != IRQ0) { TOS_Log("%s Unhandled interrupt %d\n", DEBUG_WARN, context->irq - 32); }
+        TOS_AcknowledgeIRQ(context);
+    }
 }
 
 void TOS_SetIDTDescriptor(uint8_t n, uint32_t base, TOS_IDTFlags flags, uint16_t seg)
