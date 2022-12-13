@@ -18,7 +18,8 @@ const char data[] =
     "BYC"
     "\0" "\0" "\0"
     
-    "EOE";
+    "EOE"
+    "EOF";
 
 int main() {
     TVM_module_t mod = TVM_modload(data);

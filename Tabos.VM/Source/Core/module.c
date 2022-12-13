@@ -91,6 +91,10 @@ TVM_module_t TVM_modload(const uint8_t data[])
     while (!EOE_validate((void*)((uintptr_t)data + i))) i++;
     result.body.code_end = i;
 
+    result.body.consts_start = i += 3;
+    while (!EOF_validate((void*)((uintptr_t)data + i))) i++;
+    result.body.consts_end = i;
+
     return result;
 }
 TVM_code_t TVM_read(TVM_module_t module)
@@ -111,12 +115,12 @@ TVM_code_t TVM_read(TVM_module_t module)
     int i = result.decl_start = 1;
 
     while (!BYC_validate((void*)((uintptr_t)data + i))) i++;
-    result.decl_end = ++i;
+    result.decl_end = i;
 
     bytecode:
     result.bytecode_start = i+3;
     while (!EOE_validate((void*)((uintptr_t)data + i))) i++;
-    result.bytecode_end = ++i;
+    result.bytecode_end = i;
 
     return result;
 }

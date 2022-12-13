@@ -6,7 +6,11 @@
 *.iso
 *.scoreboard
 *.log
+<<<<<<< HEAD
 Tabos.iso
+=======
+*.exe
+>>>>>>> 5ee88a6a4cf53e6d4599857c26dfba00ad353764
 
 .vscode/
 obj/
