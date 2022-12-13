@@ -5,7 +5,7 @@
 void TOS_FlushPrintBuffers();
 
 /// @brief Print list of arguments @param fmt Pointer to formatted string @param args Variadic arguments
-void TOS_PrintArgs(const char* fmt, va_list args);
+int TOS_PrintArgs(const char* fmt, va_list args);
 
 /// @brief Print list of arguments @param fmt Pointer to formatted string @param ... Arguments
 void TOS_Print(const char* fmt, ...);

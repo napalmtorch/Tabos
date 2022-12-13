@@ -13,11 +13,12 @@ void TOS_FlushPrintBuffers()
     TOS_MemSet(_workbuff, 0, PRINT_WORKSZ);
 }
 
-void TOS_PrintArgs(const char* fmt, va_list args)
+int TOS_PrintArgs(const char* fmt, va_list args)
 {
     TOS_FlushPrintBuffers();
     TOS_PrintArgsTo(_buffer, fmt, args);
     TOS_SerialPrint(TOS_GetDebugSerial(), _buffer);
+    return 0;
 }
 
 void TOS_Print(const char* fmt, ...)

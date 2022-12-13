@@ -1,12 +1,17 @@
 #ifndef __TABOS_VM_H
 #define __TABOS_VM_H 1
 
+#if TABOS_KERNEL
+    #include <Lib/Types.h>
+#else
+    #include <stdbool.h>
+    #include <stddef.h>
+    #include <stdint.h>
+#endif
+
 #include <Core/module.h>
 #include <Runtime/engine.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <atd/memory.h>
+#include <atd/mem.h>
 #include <atd/io.h>
 
 static inline bool TVM_validate(const void *data) { return ATD_memcmp(data, "TVM", 3) == 0; }

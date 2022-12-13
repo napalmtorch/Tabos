@@ -28,3 +28,4 @@
 #include <HAL/Interrupts/GDT.h>
 #include <HAL/Interrupts/IDT.h>
 #include <HAL/Interrupts/PIC.h>
+#include <TabosVM.h>

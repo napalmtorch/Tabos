@@ -1,7 +1,12 @@
 #ifndef ATD_MEMORY_H
 #define ATD_MEMORY_H 1
-#include <stdint.h>
-#include <stddef.h>
+
+#ifdef TABOS_KERNEL
+    #include <Lib/Types.h>
+#else
+    #include <stdint.h>
+    #include <stddef.h>
+#endif
 
 int ATD_memcmp(const void *left, const void *right, size_t sz);
 int ATD_strcmp(const char *left, const char *right);

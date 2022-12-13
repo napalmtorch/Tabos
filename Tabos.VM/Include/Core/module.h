@@ -1,9 +1,13 @@
 #ifndef __VM_CORE_MODULE
 #define __VM_CORE_MODULE 1
 
-#include <stdint.h>
-#include <stddef.h>
-#include <stdbool.h>
+#ifdef TABOS_KERNEL
+    #include <Lib/Types.h>
+#else
+    #include <stdint.h>
+    #include <stddef.h>
+    #include <stdbool.h>
+#endif
 
 /// @brief required by TVM_modload to identify the module.
 typedef struct TVM_manifest {

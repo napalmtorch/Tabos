@@ -9,6 +9,47 @@ static TOS_Multiboot* _mboot;
 static uint64_t      _ticks;
 static TOS_RAMFS _test_ramfs;
 
+const char vm_data[] = 
+    "TVM"
+    "test.module\0" "1.0.0\0"
+    
+    "VAR"
+    "varname\0" "number\0"
+    "test\0" "string|null\0"
+    "\xff"
+    
+    "EXE"
+    "\xde"
+    "\xff\xff\xff\xff" "testA\0" "number|void\0"
+    "\x00\x00\x00\x00" "main\0" "string\0" 
+    
+    "BYC"
+//      NOP        DBG        NOP        END
+    "\x00\x00" "\xff\x00" "\x00\x00" "\xff\xff"
+    
+    "EOE"
+    "EOF";
+
+bool vm_debug_instruction(TVM_engine_processor_t *proc)
+{
+    ATD_printf("DEBUG!\n");
+    return true;
+}
+
+int vm_main(TOS_PtrList* args) 
+{
+    TVM_module_t mod = TVM_modload(vm_data);
+    TVM_code_t code = TVM_read(mod);
+
+    TVM_register_bytecode(0xff, vm_debug_instruction);
+
+    TVM_engine_processor_t proc = TVM_build(mod, code);
+    ATD_printf("IP: 0x%x\n", proc.IP);
+
+    TVM_exec(&proc, false);
+    return 420;
+}
+
 void TOS_KernelBoot(TOS_Multiboot* mbp)
 {
     // set local multiboot pointer so we can access it after we leave this function
@@ -36,6 +77,10 @@ void TOS_KernelBoot(TOS_Multiboot* mbp)
     // initialize multitasking and create kernel thread
     TOS_InitScheduler();
     TOS_InitKernelThread();
+    
+    TOS_Thread* vm = TOS_NewThread("test_vm", 0x10000, vm_main, THREAD_PRIORITY_NORMAL, TOS_NewPtrList());
+    TOS_LoadThread(vm);
+    TOS_StartThread(vm);
 
     // initialize device/driver manager
     TOS_InitDriverManager();

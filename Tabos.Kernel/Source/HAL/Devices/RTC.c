@@ -66,7 +66,6 @@ void TOS_UpdateRTC()
 
 void TOS_HandleInterruptRTC(TOS_IRQContext* context)
 {
-    TOS_Log("RTC\n");
     if (_rtc != NULL)
     {
         _rtc->ticks++;
