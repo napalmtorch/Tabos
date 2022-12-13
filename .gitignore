@@ -6,6 +6,7 @@
 *.iso
 *.scoreboard
 *.log
+Tabos.iso
 
 .vscode/
 obj/
