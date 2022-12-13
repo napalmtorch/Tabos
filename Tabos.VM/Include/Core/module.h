@@ -21,6 +21,9 @@ typedef struct TVM_body
 
     size_t code_start;
     size_t code_end;
+
+    size_t consts_start;
+    size_t consts_end;
 } TVM_body_t;
 
 

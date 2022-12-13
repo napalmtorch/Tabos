@@ -15,9 +15,10 @@ const char data[] =
     "method\0" "type\0" "\xff"
     
     "BYC"
-    "\0" "\0" "\0"
+    "\xff" "\x00" "\x00"
     
-    "EOE";
+    "EOE"
+    "EOF";
 
 int main() {
     TVM_module_t mod = TVM_modload(data);

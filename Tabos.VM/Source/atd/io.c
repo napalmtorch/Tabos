@@ -1,4 +1,5 @@
 #include <atd/io.h>
+#include <flags.h>
 
 #ifdef TABOS_KERNEL
 
@@ -10,11 +11,13 @@
 
 int ATD_printf(const char *fmt, ...)
 {
+#ifndef __TVM_PROD__
     va_list _list;
     va_start(_list, fmt);
     int r = vprintf(fmt, _list);
     va_end(_list);
     return r;
+#endif
 }
 
 #endif

@@ -1,7 +1,7 @@
 #include <TabosVM.h>
 #include <stdio.h>
 
-const char data[] = "TVMtest.module\0""1.0.0\0""VARvarname\0""number\0""test\0""string|null\0\xff""EXE""\xde""method\0""type\0""BYC""\0""\0""\0""EOE";
+const char data[] = "TVMtest.module\0""1.0.0\0""VARvarname\0""number\0""test\0""string|null\0\xff""EXE""\xde""method\0""type\0""BYC""\0""\0""\0""EOEEOF";
 
 int main() {
     TVM_module_t mod = TVM_modload(data);
