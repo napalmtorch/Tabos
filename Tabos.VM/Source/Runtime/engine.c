@@ -28,8 +28,6 @@ bool TVM_exec(TVM_engine_processor_t *proc, bool runOne)
     byc = TVM_ENGINE_PROCESSOR_CYCLE16(proc);
     callback = __TVM_INSTR_MAP__[byc];
 
-    ATD_printf("%d\n", byc);
-
     // end instruction
     if (byc == 0xffff) return false;
 

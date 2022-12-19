@@ -11,12 +11,14 @@
 
 #include <Core/module.h>
 #include <Runtime/engine.h>
+#include <Typecheck/type.h>
+
 #include <atd/mem.h>
 #include <atd/io.h>
 
 static inline bool TVM_validate(const void *data) { return ATD_memcmp(data, "TVM", 3) == 0; }
 static inline bool VAR_validate(const void *data) { return ATD_memcmp(data, "VAR", 3) == 0; }
-static inline bool EXE_validate(const void *data) { return ATD_memcmp(data, "EXE", 3) == 0; }
+static inline bool EXE_validate(const void *data) { return ATD_memcmp(data, "EXE\xde", 4) == 0; }
 static inline bool EOE_validate(const void *data) { return ATD_memcmp(data, "EOE", 3) == 0; }
 static inline bool EOF_validate(const void *data) { return ATD_memcmp(data, "EOF", 3) == 0; }
 static inline bool BYC_validate(const void *data) { return ATD_memcmp(data, "BYC", 3) == 0; }
@@ -47,5 +49,9 @@ bool TVM_exec(TVM_engine_processor_t *processor, bool runOne);
 
 /// @brief build the vm processor @param module the module @param code the parsed code from the module @return a new processor to execute bytecode
 TVM_engine_processor_t TVM_build(TVM_module_t module, TVM_code_t code);
+
+bool TVM_register_type(const char *name, TVM_type_t type);
+
+TVM_type_t TVM_resolve_typeexpr(const char *expr);
 
 #endif
