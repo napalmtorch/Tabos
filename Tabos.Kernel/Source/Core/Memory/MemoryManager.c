@@ -26,7 +26,7 @@ void TOS_InitMemMgr(bool zero_free)
     TOS_MemSet(_blocks, 0, sizeof(_blocks));
     _count = 0;
 
-    TOS_MemoryMapEntry* mmap   = TOS_GetMultiboot()->mmap;
+    TOS_MemoryMapEntry*  mmap   = TOS_GetMultiboot()->mmap;
     size_t               mmapsz = TOS_GetMultiboot()->mmap_len / sizeof(TOS_MemoryMapEntry);
     for (size_t i = 0; i < mmapsz; i++)
     {
@@ -66,13 +66,13 @@ void TOS_InitMemMgr(bool zero_free)
 
 void TOS_ClearFreeMemory()
 {
-    TOS_Log("%s Zeroing all available free memory...", DEBUG_INFO);
+    TOS_Log("%s Zeroing all available free memory...\n", DEBUG_INFO);
 
     for (size_t i = 0; i < MEMBLK_MAX; i++)
     {
         if (_blocks[i].type == MEM_FREE) { TOS_MemSet((void*)_blocks[i].addr, 0, _blocks[i].sz); TOS_Log("Zero-filled %p-%p\n", _blocks[i].addr, _blocks[i].addr + _blocks[i].sz); }
     }
-    TOS_Log("\n%s Finished zeroing available free memory\n", DEBUG_OK);;
+    TOS_Log("%s Finished zeroing available free memory\n", DEBUG_OK);;
 }
 
 TOS_MemoryBlock* TOS_RequestMemBlock(size_t sz)

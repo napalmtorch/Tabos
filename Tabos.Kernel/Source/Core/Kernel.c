@@ -80,7 +80,7 @@ void TOS_KernelBoot(TOS_Multiboot* mbp)
     
     TOS_Thread* vm = TOS_NewThread("test_vm", 0x10000, vm_main, THREAD_PRIORITY_NORMAL, TOS_NewPtrList());
     TOS_LoadThread(vm);
-    TOS_StartThread(vm);
+    TOS_StartThread(vm);   
 
     // initialize device/driver manager
     TOS_InitDriverManager();
