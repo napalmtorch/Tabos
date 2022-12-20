@@ -7,6 +7,9 @@ typedef struct TVM_engine_processor {
     TVM_module_t module;
     TVM_code_t code;
     uint32_t IP;
+    
+    uintptr_t type_names_head;
+    uintptr_t types_head;
 } TVM_engine_processor_t;
 
 /// @brief required by TVM_exec and TVM_register_bytecode @param processor the vm's processor

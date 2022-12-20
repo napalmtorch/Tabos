@@ -1,6 +1,8 @@
 #ifndef __VM_TYPECHECK_TYPE
 #define __VM_TYPECHECK_TYPE 1
 
+#define TVM_type_t_NULLEXPR (TVM_type_t) { .identifier = -1 }
+
 #if TABOS_KERNEL
     #include <Lib/Types.h>
 #else

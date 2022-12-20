@@ -13,7 +13,7 @@
 
 typedef struct TVM_engine_var {
     const char *name;
-    TVM_type_t type; 
+    TVM_type_t type;
 
     uintptr_t pointer;
 } TVM_engine_var_t;
