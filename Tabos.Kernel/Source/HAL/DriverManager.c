@@ -84,7 +84,7 @@ TOS_Driver* TOS_FetchDriver(uint32_t id)
     return NULL;
 }
 
-TOS_Driver* TOS_FetchDriverFromName(const char* name)
+TOS_Driver* TOS_FetchDriverByName(const char* name)
 {
     if (name == NULL || TOS_StrLen(name) == 0) { return NULL; }
 

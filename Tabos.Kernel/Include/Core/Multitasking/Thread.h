@@ -21,6 +21,8 @@ typedef enum
 
 typedef struct
 {
+    float    seconds;
+    float    start;
     uint64_t ticks;
     uint32_t tps;
     uint8_t  cpu_usage;
@@ -38,18 +40,20 @@ typedef struct
     TOS_ThreadRegisters registers;
     TOS_ThreadProtocol  protocol;
     TOS_ThreadTime      time;
-    THREAD_STATE       state;
-    THREAD_PRIORITY    priority;
-    THREAD_LOCK        lock;
+    THREAD_STATE        state;
+    THREAD_PRIORITY     priority;
+    THREAD_LOCK         lock;
     TOS_PtrList         args;
-    size_t             stacksz;
-    uint32_t*          stack;
-    uint32_t           id;
-    char*              name;
+    size_t              stacksz;
+    uint32_t*           stack;
+    uint32_t            id;
+    char*               name;
 } TOS_Thread;
 
 TOS_Thread* TOS_NewThread(const char* name, size_t stacksz, TOS_ThreadProtocol protocol, THREAD_PRIORITY priority, TOS_PtrList args);
 void TOS_FreeThread(TOS_Thread* thread);
+
+void TOS_UpdateThreadTime(TOS_Thread* thread);
 
 extern TOS_Thread* THIS_THREAD;
 extern TOS_Thread* NEXT_THREAD;

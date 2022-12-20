@@ -1,9 +1,6 @@
 #include <Core/Memory/HeapManager.h>
 #include <Core/Common.h>
 
-#define HEAPS_MAX    32
-#define HEAP_MAXENTS 24576
-
 static TOS_Heap _heaps[HEAPS_MAX];
 static size_t  _count;
 
@@ -18,7 +15,7 @@ void TOS_InitHeapManager()
         size_t table_sz = sizeof(TOS_HeapBlock) * HEAP_MAXENTS;
         if (blks[i].type == MEM_FREE && blks[i].sz >= table_sz * 2)
         {
-            TOS_InitHeap(&_heaps[_count], blks[i].sz - table_sz, HEAP_MAXENTS, 0x1000, true);
+            TOS_InitHeap(&_heaps[_count], blks[i].sz - table_sz, HEAP_MAXENTS, 0x1000, false);
             _count++;
         }
     }   

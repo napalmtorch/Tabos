@@ -55,5 +55,6 @@ void TOS_HandleInterruptPIT(TOS_IRQContext* context)
         if (_pit->millis > 1000) { _pit->millis = 0; }
     }
     
+    if (THIS_THREAD != NULL) { TOS_UpdateThreadTime(THIS_THREAD); }
     TOS_AcknowledgeIRQ(context);
 }

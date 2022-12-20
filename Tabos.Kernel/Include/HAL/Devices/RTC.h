@@ -10,7 +10,7 @@ typedef struct
     TOS_DateTime tm;
     uint32_t     ticks;
     uint32_t     tps, timer;
-    double       seconds;
+    float        seconds;
     uint32_t     millis, millis_total;
 } TOS_RealTimeClock;
 
