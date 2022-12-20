@@ -44,11 +44,7 @@ bool TOS_HeapFree(TOS_Heap* heap, void* ptr)
         {
             heap->blocks[i].type = MEM_FREE;
             TOS_Log("%s Region:%p-%p Size:%a\n", DEBUG_FREE, heap->blocks[i].addr, heap->blocks[i].addr + heap->blocks[i].sz, heap->blocks[i].sz);
-            if (heap->auto_collect) 
-            { 
-                size_t collected = TOS_HeapCollect(heap); 
-                //if (collected > 0) { TOS_Log("%s Collected and merged %u free heap blocks\n", DEBUG_INFO, collected); }
-            }
+            if (heap->auto_collect) { TOS_HeapCollect(heap); }
             return true;
         }
     }

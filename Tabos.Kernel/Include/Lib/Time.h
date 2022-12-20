@@ -13,11 +13,7 @@ typedef struct
     uint8_t yday;
 } TOS_DateTime;
 
-static inline TOS_DateTime TOS_NewDateTime(int sec, int min, int hr, int mday, int mn, int yr, int wday, int yday)
-{
-    TOS_DateTime time = (TOS_DateTime)
-    {
-        sec, min, hr, mday, mn, yr, wday, yday,
-    };
-    return time;
-}
+TOS_DateTime TOS_NewDateTime(int sec, int min, int hr, int mday, int mn, int yr, int wday, int yday);
+TOS_DateTime TOS_GetTimeNow(TOS_DateTime* tm);
+uint32_t     TOS_GetMillisecondsNow(uint32_t* millis);
+float        TOS_GetSecondsNow(float* secs);

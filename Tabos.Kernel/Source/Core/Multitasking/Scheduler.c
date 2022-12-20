@@ -23,15 +23,16 @@ void TOS_InitScheduler()
 void TOS_InitKernelThread()
 {
     TOS_Thread* thread = TOS_Alloc(sizeof(TOS_Thread));
-    thread->name      = TOS_NewString("kernel");
-    thread->id        = _tid++;
-    thread->priority  = THREAD_PRIORITY_NORMAL;
-    thread->state     = THREAD_RUNNING;
-    thread->protocol  = (TOS_ThreadProtocol)main;
-    thread->stack     = (uint32_t*)TOS_GetKernelStackBottom();
-    thread->stacksz   = TOS_GetKernelStackSize();
+    thread->name       = TOS_NewString("kernel");
+    thread->id         = _tid++;
+    thread->priority   = THREAD_PRIORITY_NORMAL;
+    thread->state      = THREAD_RUNNING;
+    thread->protocol   = (TOS_ThreadProtocol)main;
+    thread->stack      = (uint32_t*)TOS_GetKernelStackBottom();
+    thread->stacksz    = TOS_GetKernelStackSize();
     TOS_Log("%s Ptr:%p Stack:%p-%p Entry:%p Args:%u ID:%x Name:%s\n", DEBUG_THREAD, thread, thread->stack, (uint32_t)thread->stack + thread->stacksz, thread->protocol, thread->args.count, thread->id, thread->name);
     TOS_LoadThread(thread);
+    THIS_THREAD = thread;
 }
 
 void TOS_SwitchThread(bool unlock)
@@ -41,6 +42,12 @@ void TOS_SwitchThread(bool unlock)
     _modifying = true;
 
     THIS_THREAD = TOS_PtrListAt(&_threads, _active);
+    if (THIS_THREAD == NULL) { asm volatile("sti"); _modifying = false; return; }
+    else
+    {
+        THIS_THREAD->time.seconds = TOS_GetSecondsNow(NULL) - THIS_THREAD->time.start;
+    }
+
     if (THIS_THREAD->lock == LOCKED)
     {
         if (!unlock) { asm volatile("sti"); _modifying = false; return; }
@@ -99,6 +106,8 @@ void TOS_StartThread(TOS_Thread* thread)
     if (thread->state == THREAD_RUNNING) { return; }
     _modifying = true;
     thread->state = THREAD_RUNNING;
+    thread->time.start = TOS_GetSecondsNow(NULL);
+    thread->time.seconds = 0;
     TOS_Log("%s Started thread %x(%s) at %p\n", DEBUG_INFO, thread->id, thread->name, thread);
     _modifying = false;
 }
@@ -121,6 +130,18 @@ void TOS_TerminateThread(TOS_Thread* thread)
     thread->state = THREAD_TERMINATED;
     TOS_Log("%s Terminated thread %x(%s) at %p\n", DEBUG_INFO, thread->id, thread->name, thread);
     _modifying = false;
+}
+
+void TOS_LockThread(TOS_Thread* thread)
+{
+    if (thread == NULL) { TOS_Panic("TOS_LockThread(00000000) - Attempt to lock null thread"); return; }
+    thread->lock = LOCKED;
+}
+
+void TOS_UnlockThread(TOS_Thread* thread)
+{
+    if (thread == NULL) { TOS_Panic("TOS_UnlockThread(00000000) - Attempt to unlock null thread"); return; }
+    thread->lock = UNLOCKED;
 }
 
 void TOS_ToggleScheduler(bool enabled) { _ready = enabled; }

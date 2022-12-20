@@ -7,6 +7,7 @@
 const double RTC_MILLIS_TIME = 0.9765625;
 
 static TOS_RealTimeClock* _rtc;
+static float              _secs_total;
 
 bool TOS_StartRTC(TOS_RealTimeClock* rtc, void* unused)
 {
@@ -17,6 +18,8 @@ bool TOS_StartRTC(TOS_RealTimeClock* rtc, void* unused)
     rtc->timer        = 0;
     rtc->millis       = 0;
     rtc->millis_total = 0;
+
+    _secs_total = 0;
 
     bool ints = TOS_IsInterruptsEnabled();
     TOS_DisableIRQs();
@@ -70,7 +73,10 @@ void TOS_HandleInterruptRTC(TOS_IRQContext* context)
     {
         _rtc->ticks++;
         _rtc->timer++;
-        _rtc->seconds += RTC_MILLIS_TIME / 1000.0;
+        _rtc->seconds += RTC_MILLIS_TIME / 1000.0f;
+
+        _secs_total = (float)_rtc->seconds;
+        _rtc->millis_total = (uint32_t)(_secs_total * 1000.0f);
 
         if (_rtc->timer >= 512)
         {

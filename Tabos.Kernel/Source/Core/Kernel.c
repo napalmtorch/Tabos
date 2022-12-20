@@ -7,7 +7,7 @@ extern uintptr_t _stack_bottom;
 
 static TOS_Multiboot* _mboot;
 static uint64_t      _ticks;
-static TOS_RAMFS _test_ramfs;
+static TOS_RAMFS     _bootfs;
 
 const char vm_data[] = 
     "TVM"
@@ -47,7 +47,7 @@ int vm_main(TOS_PtrList* args)
     ATD_printf("IP: 0x%x\n", proc.IP);
 
     TVM_exec(&proc, false);
-    return 420;
+    return 0;
 }
 
 void TOS_KernelBoot(TOS_Multiboot* mbp)
@@ -77,37 +77,50 @@ void TOS_KernelBoot(TOS_Multiboot* mbp)
     // initialize multitasking and create kernel thread
     TOS_InitScheduler();
     TOS_InitKernelThread();
-    
-    TOS_Thread* vm = TOS_NewThread("test_vm", 0x10000, vm_main, THREAD_PRIORITY_NORMAL, TOS_NewPtrList());
-    TOS_LoadThread(vm);
-    TOS_StartThread(vm);   
 
     // initialize device/driver manager
     TOS_InitDriverManager();
 
+    // start garbage collector
+    TOS_StartGarbageCollector();
+
     // assume our ramdisk always exists and is the first module - then load it
     TOS_MemoryBlock* mod = TOS_GetMemBlockByType(MEM_MODULE);
-    if (mod != NULL && mod->type == MEM_MODULE) { TOS_InitRAMFS(&_test_ramfs, (void*)mod->addr, mod->sz); }
+    if (mod != NULL && mod->type == MEM_MODULE) { TOS_InitRAMFS(&_bootfs, (void*)mod->addr, mod->sz); }
+
+    TOS_RAMFile* boot_ini = TOS_OpenRAMFile(&_bootfs, "boot.ini");
+    if (boot_ini == NULL) { TOS_Log("%s Unable to locate 'boot.ini'\n", DEBUG_WARN); }
+    else
+    {
+        TOS_Log("%s Boot Configuration File:\n%s\n", DEBUG_INFO, (char*)TOS_ReadRAMFileData(&_bootfs, boot_ini));
+    }
 }
 
 void TOS_KernelRun()
 {
     TOS_Log("%s Entered kernel main\n", DEBUG_OK);
 
+    // start virtual machine test
+    TOS_Thread* vm = TOS_NewThread("test_vm", 0x10000, vm_main, THREAD_PRIORITY_NORMAL, TOS_NewPtrList());
+    TOS_LoadThread(vm);
+    TOS_StartThread(vm);
+
     uint32_t last = 0, fps = 0, frames = 0;
     while (true)
-    {
-        TOS_RealTimeClock* rtc = (TOS_RealTimeClock*)TOS_FetchDriverFromName("RTC");
+    {        
+        TOS_LockThread(THIS_THREAD);
+
+        TOS_RealTimeClock* rtc = (TOS_RealTimeClock*)TOS_FetchDriverByName("RTC");
         if (rtc != NULL)
         {
             frames++;
             uint32_t secs = (uint32_t)rtc->seconds;
             if (last != secs)
             {
-                last = secs;
-                fps = frames;
+                last   = secs;
+                fps    = frames;
                 frames = 0;
-                TOS_Log("FPS: %u\n", fps);
+                TOS_Log("FPS: %u, KTICKS: %u START:%u UPTIME:%u\n", fps, THIS_THREAD->time.tps, (uint32_t)THIS_THREAD->time.start, (uint32_t)THIS_THREAD->time.seconds);
             }
         }
 

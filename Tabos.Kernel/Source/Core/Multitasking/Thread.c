@@ -7,6 +7,8 @@
 TOS_Thread* THIS_THREAD = NULL;
 TOS_Thread* NEXT_THREAD = NULL;
 
+static int _tmlast;
+
 void TOS_OnThreadReturn()
 {
     register int eax asm("eax");   
@@ -55,4 +57,18 @@ void TOS_FreeThread(TOS_Thread* thread)
     TOS_Free(thread->name);
     TOS_Free(thread->stack);
     TOS_Free(thread);
+}
+
+void TOS_UpdateThreadTime(TOS_Thread* thread)
+{
+    if (thread == NULL) { TOS_Panic("TOS_UpdateThreadTime(00000000) - Attempt to update null thread time"); return; }
+    thread->time.ticks++;
+
+    TOS_DateTime tm = TOS_GetTimeNow(NULL);
+    if (_tmlast != tm.second)
+    {
+        _tmlast            = tm.second;
+        thread->time.tps   = thread->time.ticks;
+        thread->time.ticks = 0;
+    }
 }

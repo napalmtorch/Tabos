@@ -14,6 +14,7 @@
 #include <Core/Memory/MemoryManager.h>
 #include <Core/Memory/HeapManager.h>
 #include <Core/Memory/Heap.h>
+#include <Core/Memory/GarbageCollector.h>
 #include <Core/Multitasking/Thread.h>
 #include <Core/Multitasking/Scheduler.h>
 #include <FileSystem/RAMFS.h>
