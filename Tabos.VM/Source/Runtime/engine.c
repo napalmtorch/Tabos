@@ -5,7 +5,60 @@
 ATD_LINK_NODE(uintptr_t);
 ATD_LIST_CREATE(uintptr_t, 0);
 
+#pragma region INSTRUCTIONS
+
+#pragma region NULL_INSTR
+bool NULL_OPERATION(TVM_engine_processor_t *proc)
+{
+    return true;
+}
+#pragma endregion
+#pragma region FLOW_INSTR
+#pragma region CALL
+bool CALLMS(TVM_engine_processor_t *proc)
+{
+    const char *IDENTIFIER = (proc->module.base + proc->module.body.code_start + proc->code.bytecode_start) + proc->IP;
+    TVM_method_t method = TVM_get_method_n(proc->module, proc->code, IDENTIFIER);
+
+    proc->IP += ATD_strlen(IDENTIFIER) + 1;
+    ATD_printf("%s: %X\n", method.name, method.offset);
+
+    return true;
+}
+bool CALLM8(TVM_engine_processor_t *proc)
+{
+    uint8_t IDENTIFIER = TVM_ENGINE_PROCESSOR_CYCLE8(proc);
+    TVM_method_t method = TVM_get_method_i(proc->module, proc->code, IDENTIFIER);
+
+    ATD_printf("%s: %X\n", method.name, method.offset);
+
+    return true;
+}
+bool CALLM16(TVM_engine_processor_t *proc)
+{
+    uint16_t IDENTIFIER = TVM_ENGINE_PROCESSOR_CYCLE16(proc);
+    TVM_method_t method = TVM_get_method_i(proc->module, proc->code, IDENTIFIER);
+
+    ATD_printf("%s: %X\n", method.name, method.offset);
+
+    return true;
+}
+bool CALLM32(TVM_engine_processor_t *proc)
+{
+    uint32_t IDENTIFIER = TVM_ENGINE_PROCESSOR_CYCLE32(proc);
+    TVM_method_t method = TVM_get_method_i(proc->module, proc->code, IDENTIFIER);
+
+    ATD_printf("%s: %X\n", method.name, method.offset);
+
+    return true;
+}
+#pragma endregion
+#pragma endregion
+
+#pragma endregion
+
 TVM_instruction_callback_t __TVM_INSTR_MAP__[65535] = { 0 };
+bool __TVM_INSTR_MAP_INIT__ = false;
 
 void TVM_register_bytecode(uint16_t b, TVM_instruction_callback_t instr) { __TVM_INSTR_MAP__[b] = instr; }
 
@@ -19,6 +72,19 @@ TVM_engine_processor_t TVM_build(TVM_module_t m, TVM_code_t c)
         .types_head = ATD_LIST_uintptr_t_MAKE()
     };
     return result;
+}
+
+void TVM_init()
+{
+    if (__TVM_INSTR_MAP_INIT__) return;
+
+    TVM_register_bytecode(0, NULL_OPERATION);
+    TVM_register_bytecode(1, CALLMS);
+    TVM_register_bytecode(2, CALLM8);
+    TVM_register_bytecode(3, CALLM16);
+    TVM_register_bytecode(4, CALLM32);
+
+    __TVM_INSTR_MAP_INIT__ = true;
 }
 
 bool TVM_exec(TVM_engine_processor_t *proc, bool runOne)

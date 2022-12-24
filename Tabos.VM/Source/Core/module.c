@@ -41,6 +41,7 @@ TVM_method_t TVM_METHOD_PARSE(uintptr_t ptr)
 }
 int TVM_METHOD_LEN(uintptr_t ptr)
 {
+    ptr+=4;
     size_t namesz = ATD_strlen((const char *) ptr);
     size_t typesz = ATD_strlen((const char *) ptr+namesz+1);
 
@@ -53,7 +54,7 @@ TVM_method_t TVM_METHOD_AT(TVM_module_t m, TVM_code_t c, size_t ind)
     for (i = m.body.code_start + c.decl_start; i < m.body.code_start + c.decl_end; i++)
     {
         if (x == ind) return result = TVM_METHOD_PARSE((uintptr_t)m.base + i);
-        else i += TVM_VAR_LEN((uintptr_t)m.base + i) + 1, x++;
+        else i += TVM_METHOD_LEN((uintptr_t)m.base + i) + 1, x++;
     }
     return result;
 }

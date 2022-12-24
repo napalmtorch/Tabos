@@ -54,4 +54,7 @@ bool TVM_register_type(TVM_engine_processor_t *processor, const char *name, TVM_
 
 TVM_type_t * TVM_resolve_typeexpr(TVM_engine_processor_t *processor, const char *expr);
 
+/// @brief init TVM base instructions
+void TVM_init();
+
 #endif

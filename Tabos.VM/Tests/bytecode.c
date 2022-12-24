@@ -12,30 +12,32 @@ const char data[] =
     
     "EXE"
     "\xde"
-    "\xff\xff\xff\xff" "testA\0" "number|void\0"
-    "\x00\x00\x00\x00" "main\0" "string\0" 
+    "\xff\xff\x00\x00" "testA\0" "number|void\0"
+    "\x00\x00\x00\x00" "main\0" "void\0" 
+    "\xff\x00\xff\x00" "test.method\0" "void\0"
+    "\x00\xff\x00\xff" "ok\0" "number\0"
     
     "BYC"
-//      NOP        DBG        NOP        END
-    "\x00\x00" "\xff\x00" "\x00\x00" "\xff\xff"
+//    callms    test.method
+    "\x01\x00" "test.method\0"
+//    callm8    0
+    "\x02\x00" "\0"
+//    callm16   1
+    "\x03\x00" "\x01\0"
+//    callm32   2
+    "\x04\x00" "\x03\0\0\0"
+//     end
+    "\xff\xff"
     
     "EOE"
     "EOF";
 
-bool debug_instruction(TVM_engine_processor_t *proc)
-{
-    printf("DEBUG!\n");
-    return true;
-}
-
 int main() {
+    TVM_init();
+
     TVM_module_t mod = TVM_modload(data);
     TVM_code_t code = TVM_read(mod);
 
-    TVM_register_bytecode(0xff, debug_instruction);
-
     TVM_engine_processor_t proc = TVM_build(mod, code);
-    printf("IP: 0x%x\n", proc.IP);
-
     TVM_exec(&proc, false);
 }
